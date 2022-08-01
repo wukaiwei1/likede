@@ -1,24 +1,31 @@
 <template>
   <div class="loginApp">
-    <div class="login-form">
-      <img src="../../assets/image/userPic.png" alt="">
+    <el-form
+      ref="loginForm"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+      :model="loginForm"
+      :rules="loginFormrules"
+    >
+      <img src="../../assets/image/userPic.png" alt="" />
       <!-- form表单 -->
-      <el-form
-        status-icon
-        label-width="100px"
-        class="demo-ruleForm"
-      >
+      <!-- 账号 -->
+      <el-form-item prop="loginName">
         <el-input
-          v-model="username"
+          v-model="loginForm.loginName"
           class="form-item"
           placeholder="请输入账号"
           type="text"
         >
           <i slot="prefix" class="el-input__icon el-icon-mobile-phone" />
         </el-input>
+      </el-form-item>
+      <!-- 密码 -->
+      <el-form-item prop="password">
         <el-input
           ref="password"
-          v-model="password"
+          v-model="loginForm.password"
           class="form-item"
           :type="passwordType"
           placeholder="请输入密码"
@@ -32,19 +39,27 @@
           </template>
           <i slot="prefix" class="el-input__icon el-icon-lock" />
         </el-input>
+      </el-form-item>
+      <!-- 验证码 -->
+      <el-form-item prop="code">
         <el-input
-          v-model.number="age"
+          v-model="loginForm.code"
           class="form-item"
           placeholder="请输入验证码"
         >
           <i slot="prefix" class="el-input__icon el-icon-postcard" />
           <template #append>
-            <img src="../../assets/image/testpic.jpg" alt="">
+            <img
+              :src="$store.state.user.clientPic"
+              alt=""
+              @click="changeCode"
+            />
           </template>
         </el-input>
-        <el-button type="primary" @click="submitForm">提交</el-button>
-      </el-form>
-    </div>
+      </el-form-item>
+      <!-- 登录 -->
+      <el-button type="primary" @click="submitForm">登录</el-button>
+    </el-form>
   </div>
 </template>
 
@@ -52,19 +67,71 @@
 export default {
   data() {
     return {
-      username: '',
-      password: '',
-      age: '',
-      passwordType: 'password'
+      // 登录信息
+      loginForm: {
+        // 用户名
+        loginName: 'admin',
+        // 密码
+        password: 'admin',
+        // 验证码
+        code: '',
+        // 请求验证码的token
+        clientToken: Math.ceil(Math.random() * 10) * 1024,
+        // 类型 0:后台，1: 运营运维端，2: 合作商后台
+        loginType: '0',
+      },
+      // 点击切换密码框类型
+      passwordType: 'password',
+      // 表单验证规则
+      loginFormrules: {
+        loginName: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+        ],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+      },
+      // 验证码节流标识
+      codeTime: '',
     }
   },
 
-  created() {},
+  created() {
+    // 发起获取验证码图片请求
+    this.$store.dispatch('getclientToken', this.loginForm.clientToken)
+  },
 
   methods: {
     // 登录
-    submitForm() {},
-    // 密码框
+    submitForm() {
+      this.$refs.loginForm.validate(async (boolean, err) => {
+        // 判断验证码
+        if (Reflect.has(err, 'loginName')) {
+          this.$message.error(err.loginName[0].message)
+        } else if (Reflect.has(err, 'password')) {
+          this.$message.error(err.password[0].message)
+        } else if (Reflect.has(err, 'code')) {
+          this.$message.error(err.code[0].message)
+        }
+        if (!boolean) {
+          return
+        }
+        // 触发vuex发起登录请求
+        await this.$store.dispatch('userLogin', this.loginForm)
+        if (this.$store.state.user.token) {
+          // 路由跳转
+          this.$router.push('/')
+        } else if (this.$store.state.user.message === '账户名或密码错误') {
+          // 账号密码错误提示
+          this.$message.error(`${this.$store.state.user.message},请重新输入`)
+        } else {
+          // 验证码错误
+          this.$message.error(`${this.$store.state.user.message},请重新输入`)
+          // 重新发起获取验证码图片请求
+          this.$store.dispatch('getclientToken', this.loginForm.clientToken)
+        }
+      })
+    },
+    // 密码框切换类型
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -74,19 +141,33 @@ export default {
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
-    }
-  }
+    },
+    // 切换验证码
+    changeCode() {
+      // 节流函数
+      if (this.codeTime) return
+      this.codeTime = setTimeout(() => {
+        console.log(123)
+        this.$store.dispatch(
+          'getclientToken',
+          this.loginForm.clientToken * 1024,
+        )
+        // 清空
+        this.codeTime = ''
+      }, 1000)
+    },
+  },
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 // 背景
 .loginApp {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  background: url("../../assets/image/background.png");
+  background: url('../../assets/image/background.png');
   .login-form {
     position: relative;
     padding: 76px 35px 0;
@@ -103,43 +184,46 @@ export default {
       width: 96px;
       height: 96px;
     }
-    .demo-ruleForm {
-      .form-item {
-        margin-bottom: 24px;
-        width: 100%;
-        height: 52px;
-        background: #fff;
-        ::v-deep.el-input__inner {
-          padding: 12px 5px 12px 35px !important;
-          height: 52px !important;
-        }
+    .form-item {
+      margin-bottom: 24px;
+      width: 100%;
+      height: 52px;
+      background: #fff;
 
-        ::v-deep.el-input__icon {
-          font-size: 16px;
-        }
-        ::v-deep.el-input__suffix {
-          margin-right: 5px;
-          line-height: 52px;
-          font-size: 18px;
-        }
-        ::v-deep .el-input-group__append{
-          padding:0;
-          height: 50px;
-          border:0;
-          background-color:#fff;
-          >img{
-            height: 52px;
-          }
+      ::v-deep.el-input__inner {
+        padding: 12px 5px 12px 35px !important;
+        height: 52px !important;
+      }
+      ::v-deep.el-input__icon {
+        font-size: 16px;
+      }
+      ::v-deep.el-input__suffix {
+        margin-right: 5px;
+        line-height: 52px;
+        font-size: 18px;
+      }
+      ::v-deep .el-input-group__append {
+        padding: 0;
+        height: 50px;
+        border: 0;
+        background-color: #fff;
+        cursor: pointer;
+        > img {
+          height: 52px;
         }
       }
-      ::v-deep.el-button--primary {
-        width: 100% !important;
-        height: 52px;
-        color: #fff;
-        opacity: 0.91;
-        border-radius: 8px;
-        background-image: linear-gradient(262deg, #2e50e1, #6878f0);
-      }
+    }
+    ::v-deep .el-form-item__content {
+      height: 53px;
+    }
+
+    ::v-deep.el-button--primary {
+      width: 100% !important;
+      height: 52px;
+      color: #fff;
+      opacity: 0.91;
+      border-radius: 8px;
+      background-image: linear-gradient(262deg, #2e50e1, #6878f0);
     }
   }
 }
