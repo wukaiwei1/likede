@@ -11,7 +11,11 @@ export function getCaptcha(clientToken) {
     responseType: 'blob',
   })
 }
-
+/**
+ *
+ * @param {Object} data 登录需要的数据
+ * @returns Promise
+ */
 export const login = (data) => {
   return request({
     url: '/api/user-service/user/login',

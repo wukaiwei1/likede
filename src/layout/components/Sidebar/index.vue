@@ -3,7 +3,6 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
-        :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :unique-opened="false"
@@ -23,15 +22,12 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-// import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
 
 export default {
   components: { SidebarItem },
   computed: {
-    ...mapGetters(['sidebar']),
     routes() {
       return this.$router.options.routes
     },
@@ -50,14 +46,12 @@ export default {
     variables() {
       return variables
     },
-    isCollapse() {
-      return !this.sidebar.opened
-    },
   },
 }
 </script>
 <style scoped lang="scss">
-#app .sidebar-container ::v-deep{
-  top: 50px !important;
+#app .sidebar-container ::v-deep {
+  top: 60px !important;
+  background-color: #fff;
 }
 </style>

@@ -58,7 +58,9 @@
         </el-input>
       </el-form-item>
       <!-- 登录 -->
-      <el-button type="primary" @click="submitForm">登录</el-button>
+      <el-button type="primary" @click="submitForm" :loading="loginLoading"
+        >登录</el-button
+      >
     </el-form>
   </div>
 </template>
@@ -75,8 +77,6 @@ export default {
         password: 'admin',
         // 验证码
         code: '',
-        // 请求验证码的token
-        clientToken: Math.ceil(Math.random() * 10) * 1024,
         // 类型 0:后台，1: 运营运维端，2: 合作商后台
         loginType: '0',
       },
@@ -92,44 +92,35 @@ export default {
       },
       // 验证码节流标识
       codeTime: '',
+      loginLoading: false,
     }
   },
 
   created() {
     // 发起获取验证码图片请求
-    this.$store.dispatch('getclientToken', this.loginForm.clientToken)
+    this.$store.dispatch('user/getclientToken')
   },
 
   methods: {
     // 登录
-    submitForm() {
-      this.$refs.loginForm.validate(async (boolean, err) => {
-        // 判断验证码
-        if (Reflect.has(err, 'loginName')) {
-          this.$message.error(err.loginName[0].message)
-        } else if (Reflect.has(err, 'password')) {
-          this.$message.error(err.password[0].message)
-        } else if (Reflect.has(err, 'code')) {
-          this.$message.error(err.code[0].message)
-        }
-        if (!boolean) {
-          return
-        }
+    async submitForm() {
+      try {
+        this.loginLoading = true
+        await this.$refs.loginForm.validate()
         // 触发vuex发起登录请求
-        await this.$store.dispatch('userLogin', this.loginForm)
-        if (this.$store.state.user.token) {
-          // 路由跳转
-          this.$router.push('/')
-        } else if (this.$store.state.user.message === '账户名或密码错误') {
-          // 账号密码错误提示
-          this.$message.error(`${this.$store.state.user.message},请重新输入`)
-        } else {
-          // 验证码错误
-          this.$message.error(`${this.$store.state.user.message},请重新输入`)
-          // 重新发起获取验证码图片请求
-          this.$store.dispatch('getclientToken', this.loginForm.clientToken)
-        }
-      })
+        await this.$store.dispatch('user/userLogin', this.loginForm)
+        // 成功提示
+        this.$message({
+          type: 'success',
+          message: '登录成功',
+        })
+        // 路由跳转
+        this.$router.push('/')
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loginLoading = false
+      }
     },
     // 密码框切换类型
     showPwd() {
@@ -147,9 +138,8 @@ export default {
       // 节流函数
       if (this.codeTime) return
       this.codeTime = setTimeout(() => {
-        console.log(123)
         this.$store.dispatch(
-          'getclientToken',
+          'user/getclientToken',
           this.loginForm.clientToken * 1024,
         )
         // 清空

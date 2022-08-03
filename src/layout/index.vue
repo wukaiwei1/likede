@@ -7,13 +7,12 @@
     />
     <!-- 侧边栏 -->
     <sidebar class="sidebar-container" />
+    <!-- 头部组件 -->
+    <navbar />
     <!-- 头部部分 -->
     <div class="main-container">
-      <navbar />
       <!-- 主体头部 -->
-      <div :class="{ 'fixed-header': fixedHeader }">
-        <!-- 头部组件 -->
-      </div>
+      <div :class="{ 'fixed-header': fixedHeader }"></div>
       <!-- 二级路由占位组件 -->
       <app-main />
     </div>
@@ -34,27 +33,22 @@ export default {
   mixins: [ResizeMixin],
   computed: {
     sidebar() {
-      return this.$store.state.app.sidebar
+      // return this.$store.state.app.sidebar
     },
     device() {
-      return this.$store.state.app.device
+      // return this.$store.state.app.device
     },
     fixedHeader() {
       return this.$store.state.settings.fixedHeader
     },
     classObj() {
       return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile',
       }
     },
   },
   methods: {
-    handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
-    },
+    handleClickOutside() {},
   },
 }
 </script>
@@ -72,6 +66,9 @@ export default {
     position: fixed;
     top: 0;
   }
+}
+.main-container {
+  margin-top: 60px;
 }
 .drawer-bg {
   background: #000;
