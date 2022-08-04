@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">运维工单</div>
+  <div class="app-container">策略管理</div>
 </template>
 
 <script>

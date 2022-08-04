@@ -1,10 +1,10 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div
+    <!-- <div
       v-if="device === 'mobile' && sidebar.opened"
       class="drawer-bg"
       @click="handleClickOutside"
-    />
+    /> -->
     <!-- 侧边栏 -->
     <sidebar class="sidebar-container" />
     <!-- 头部组件 -->
@@ -12,7 +12,7 @@
     <!-- 头部部分 -->
     <div class="main-container">
       <!-- 主体头部 -->
-      <div :class="{ 'fixed-header': fixedHeader }"></div>
+      <!-- <div :class="{ 'fixed-header': fixedHeader }"></div> -->
       <!-- 二级路由占位组件 -->
       <app-main />
     </div>
@@ -31,6 +31,10 @@ export default {
     AppMain,
   },
   mixins: [ResizeMixin],
+  created() {
+    // 获取用户详细请求
+    this.$store.dispatch('user/getUserInfo')
+  },
   computed: {
     sidebar() {
       // return this.$store.state.app.sidebar
@@ -56,7 +60,9 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/mixin.scss';
 @import '~@/styles/variables.scss';
-
+#app .main-container {
+  margin-left: 165px;
+}
 .app-wrapper {
   @include clearfix;
   position: relative;

@@ -5,9 +5,13 @@
     </h1>
     <div class="right">
       <div class="userPic">
-        <img src="../../assets/image/user.png" alt="" />
+        <img
+          :src="$store.state.user.userInfo.image"
+          alt=""
+          v-imgError="defaultImg"
+        />
       </div>
-      <span>欢迎您,admin</span>
+      <span>欢迎您,{{ $store.state.user.userInfo.userName }}</span>
       <div class="logout" @click="logout">
         退出
         <i class="el-icon-caret-bottom"></i>
@@ -17,7 +21,14 @@
 </template>
 
 <script>
+import defaultImg from '@/assets/image/user.png'
 export default {
+  data() {
+    return {
+      // 默认图片
+      defaultImg,
+    }
+  },
   components: {},
   computed: {},
   methods: {
@@ -25,7 +36,7 @@ export default {
     logout() {
       // 清空token
       localStorage.removeItem('vuex')
-      this.$store.commit('user/setUserToken', '')
+      this.$store.commit('user/setUserToken', {})
       // 跳转页面
       this.$router.push('/login')
     },

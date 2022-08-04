@@ -46,6 +46,7 @@
           v-model="loginForm.code"
           class="form-item"
           placeholder="请输入验证码"
+          @keyup.enter.native="submitFn"
         >
           <i slot="prefix" class="el-input__icon el-icon-postcard" />
           <template #append>
@@ -58,7 +59,11 @@
         </el-input>
       </el-form-item>
       <!-- 登录 -->
-      <el-button type="primary" @click="submitForm" :loading="loginLoading"
+      <el-button
+        type="primary"
+        @click="submitForm"
+        :loading="loginLoading"
+        ref="login"
         >登录</el-button
       >
     </el-form>
@@ -104,11 +109,21 @@ export default {
   methods: {
     // 登录
     async submitForm() {
+      console.log(789)
       try {
         this.loginLoading = true
         await this.$refs.loginForm.validate()
         // 触发vuex发起登录请求
         await this.$store.dispatch('user/userLogin', this.loginForm)
+        //判断是否是响应数据是否存在success,没有则返回data
+        if (!this.$store.state.user.userInfo.success) {
+          this.$message.error(this.$store.state.user.userInfo.msg)
+          // 发起获取验证码图片请求
+          if (this.$store.state.user.userInfo.msg === '验证码错误') {
+            this.$store.dispatch('user/getclientToken')
+          }
+          return
+        }
         // 成功提示
         this.$message({
           type: 'success',
@@ -145,6 +160,11 @@ export default {
         // 清空
         this.codeTime = ''
       }, 1000)
+    },
+    submitFn() {
+      console.log(this.$refs.login.$el)
+      this.$refs.login.$el.click()
+      his.$refs.login.$el.style.border = '12px solid #3a8ee6'
     },
   },
 }

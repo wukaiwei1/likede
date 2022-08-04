@@ -6,30 +6,6 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
 export const constantRoutes = [
   {
     path: '/login',
@@ -46,13 +22,13 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home',
     children: [
       {
-        path: 'dashboard',
-        name: 'Dashboard',
-        component: () => import('@/views/dashboard/index'),
-        meta: { title: '立可得', icon: 'dashboard' },
+        path: 'home',
+        name: 'home',
+        component: () => import('@/views/home/index'),
+        meta: { title: '帝可得', icon: 'el-icon-s-home' },
       },
     ],
   },
@@ -62,7 +38,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: '工单管理', icon: 'el-icon-s-help' },
+    meta: { title: '工单管理', icon: 'el-icon-tickets' },
     children: [
       {
         path: 'table',
@@ -80,152 +56,152 @@ export const constantRoutes = [
   },
 
   {
-    path: '/nested',
+    path: '/node',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/node/region',
     meta: {
       title: '点位管理',
-      icon: 'nested',
+      icon: 'el-icon-map-location',
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'nested1',
+        path: 'region',
+        component: () => import('@/views/address/region/index'), // Parent router-view
+        name: 'region',
         meta: { title: '区域管理' },
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'nested2',
+        path: 'node',
+        component: () => import('@/views/address/node/index'),
+        name: 'node',
         meta: { title: '点位管理' },
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'nested3',
+        path: 'partner',
+        component: () => import('@/views/address/partner/index'),
+        name: 'partner',
         meta: { title: '合作商管理' },
       },
     ],
   },
   {
-    path: '/Device',
+    path: '/vm',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Device',
+    redirect: '/vm/index',
+    name: 'vm',
     meta: {
       title: '设备管理',
-      icon: 'nested',
+      icon: 'el-icon-lollipop',
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Device1',
+        path: 'index',
+        component: () => import('@/views/vm/index/index'), // Parent router-view
+        name: 'index',
         meta: { title: '设备管理' },
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Device2',
+        path: 'status',
+        component: () => import('@/views/vm/status/index'),
+        name: 'status',
         meta: { title: '设备状态' },
       },
       {
-        path: 'menu3',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Device3',
+        path: 'type',
+        component: () => import('@/views/vm/type/index'),
+        name: 'type',
         meta: { title: '设置类型管理' },
       },
     ],
   },
   {
-    path: '/people',
+    path: '/user',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Device',
+    redirect: '/user/index',
+    name: 'user',
     meta: {
       title: '人员管理',
-      icon: 'nested',
+      icon: 'el-icon-user',
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Device1',
+        path: 'index',
+        component: () => import('@/views/user/index/index'), // Parent router-view
+        name: 'index-a',
         meta: { title: '人员列表' },
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Device2',
+        path: 'user-task-stats',
+        component: () => import('@/views/user/taskStats/index'),
+        name: 'user-task-stats',
         meta: { title: '人效统计' },
       },
       {
-        path: 'menu3',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Device3',
+        path: 'user-work',
+        component: () => import('@/views/user/work/index'),
+        name: 'user-work',
         meta: { title: '工作量列表' },
       },
     ],
   },
   {
-    path: '/goods',
+    path: '/sku',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Device',
+    redirect: '/sku/sku-class',
     meta: {
       title: '商品管理',
-      icon: 'nested',
+      icon: 'el-icon-goods',
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Device1',
+        path: 'sku-class',
+        component: () => import('@/views/sku/class/index'), // Parent router-view
+        name: 'sku-class',
         meta: { title: '商品类型' },
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Device2',
+        path: 'sku',
+        component: () => import('@/views/sku/sku/index'),
+        name: 'sku',
         meta: { title: '商品管理' },
       },
     ],
   },
   {
-    path: '/form',
+    path: '/policy',
     component: Layout,
+    redirect: '/policy/index',
     children: [
       {
         path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '策略管理', icon: 'form' },
+        name: 'indexPO',
+        component: () => import('@/views/policy/index'),
+        meta: { title: '策略管理', icon: 'el-icon-table-lamp' },
       },
     ],
   },
   {
-    path: '/menu',
+    path: '/order',
     component: Layout,
+    redirect: '/order/order',
     children: [
       {
-        path: 'menu1',
-        name: 'Device2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: '订单管理', icon: 'link' },
+        path: 'order',
+        name: 'order',
+        component: () => import('@/views/order/index'),
+        meta: { title: '订单管理', icon: 'el-icon-collection' },
       },
     ],
   },
   {
-    path: '/menu2',
+    path: '/report',
     component: Layout,
     children: [
       {
-        path: 'menu2',
-        name: 'Device2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: '对账管理', icon: 'link' },
+        path: 'report',
+        name: 'report',
+        component: () => import('@/views/report/index'),
+        meta: { title: '对账管理', icon: 'el-icon-data-analysis' },
       },
     ],
   },

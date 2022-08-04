@@ -23,3 +23,14 @@ export const login = (data) => {
     data,
   })
 }
+
+/**
+ *
+ * @param {*} id  用户id
+ * @returns Promise
+ */
+export const getUserInfo = (id) => {
+  return request({
+    url: `/api/user-service/user/${id}`,
+  })
+}

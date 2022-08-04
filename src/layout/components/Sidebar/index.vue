@@ -51,7 +51,11 @@ export default {
 </script>
 <style scoped lang="scss">
 #app .sidebar-container ::v-deep {
+  width: 167px !important;
   top: 60px !important;
   background-color: #fff;
+}
+::v-deep .el-menu-item {
+  // color: pink !important;
 }
 </style>
