@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function getCaptcha(clientToken) {
   return request({
-    url: `/api/user-service/user/imageCode/${clientToken}`,
+    url: `/user-service/user/imageCode/${clientToken}`,
     responseType: 'blob',
   })
 }
@@ -18,7 +18,7 @@ export function getCaptcha(clientToken) {
  */
 export const login = (data) => {
   return request({
-    url: '/api/user-service/user/login',
+    url: '/user-service/user/login',
     method: 'POST',
     data,
   })
@@ -31,6 +31,6 @@ export const login = (data) => {
  */
 export const getUserInfo = (id) => {
   return request({
-    url: `/api/user-service/user/${id}`,
+    url: `/user-service/user/${id}`,
   })
 }

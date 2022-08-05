@@ -51,7 +51,7 @@ export default {
   width: 100%;
   height: 60px;
   overflow: hidden;
-  // z-index: 99999;
+  z-index: 999;
   // position: relative;
   background: url('../../assets/image/bg.png') no-repeat;
   background-size: cover;
