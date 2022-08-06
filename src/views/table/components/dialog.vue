@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="提示" :visible="dialogVisible" width="30%">
+  <el-dialog title="提示" :visible="dialogVisible" @close="onClose" width="30%">
     <span>这是一段信息</span>
     <span slot="footer" class="dialog-footer">
       <el-button>取 消</el-button>
@@ -22,7 +22,11 @@ export default {
 
   created() {},
 
-  methods: {},
+  methods: {
+    onClose() {
+      this.$emit('update:dialogVisible', false)
+    },
+  },
 }
 </script>
 

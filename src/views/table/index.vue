@@ -42,7 +42,7 @@
       </div>
     </div>
     <!-- 详情对话框 -->
-    <My-dialog :dialogVisible="dialogVisible"></My-dialog>
+    <My-dialog :dialogVisible.sync="dialogVisible"></My-dialog>
   </div>
 </template>
 
@@ -96,10 +96,10 @@ export default {
         const { data } = await taskSearch(taskData)
         data?.currentPageRecords?.forEach((item) => {
           item.createType = item.createType === 0 ? '自动' : '手动'
-          item.operation = '查看详情'
-          item.createTime = item.createTime.replace('T', ' ')
-          item.createTime = item.createTime.replace('-', '.')
-          item.createTime = item.createTime.replace('-', '.')
+          item.createTime = item.createTime
+            .replace('T', ' ')
+            .replace('-', '.')
+            .replace('-', '.')
         })
         this.WorkOrderDate = data
         console.log(data)
@@ -108,10 +108,9 @@ export default {
       }
     },
     // 点击获取工单详情
-    handleClick() {
+    handleClick(e) {
       //  显示对话框
       this.dialogVisible = true
-      console.log(11231)
     },
     // 下一页
     getNextPage() {
