@@ -164,7 +164,7 @@ export default {
     submitFn() {
       console.log(this.$refs.login.$el)
       this.$refs.login.$el.click()
-      his.$refs.login.$el.style.border = '12px solid #3a8ee6'
+      this.$refs.login.$el.style.border = '1px solid #3a8ee6'
     },
   },
 }

@@ -6,6 +6,7 @@
     @current-change="handleCurrentChange"
     style="width: 100%"
     :header-cell-style="{ background: '#f3f6fb' }"
+    empty-text="暂时没有数据了"
   >
     <el-table-column type="index" width="100" label="序号"> </el-table-column>
     <el-table-column property="taskCode" label="工单编号" width="200">
@@ -22,7 +23,15 @@
     </el-table-column>
     <el-table-column property="userName" label="运营人员"> </el-table-column>
     <el-table-column property="createTime" label="创建日期"> </el-table-column>
-    <el-table-column property="operation" label="操作"> </el-table-column>
+    <el-table-column label="操作">
+      <slot></slot>
+      <!-- <template slot-scope="scope">
+        <el-button @click="handleClick(scope.row)" type="text" size="small"
+          >查看详情</el-button
+        >
+        <el-button type="text" size="small">编辑</el-button>
+      </template> -->
+    </el-table-column>
   </el-table>
 </template>
 
